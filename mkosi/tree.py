@@ -160,6 +160,14 @@ def rmtree(*paths: Path, sandbox: SandboxProtocol = nosandbox) -> None:
 
     filtered = sorted({p for p in paths if p.exists()})
     if filtered:
+        run(["ls", "-lAh", "--", *filtered],
+            sandbox=sandbox(binary="ls", mounts=[Mount(p.parent, p.parent) for p in filtered]))
+        # run(["find", *filtered],
+        #     sandbox=sandbox(binary="find", mounts=[Mount(p.parent, p.parent) for p in filtered]))
+        # run(["rm", "-rdvf", "--", *filtered],
+        #     sandbox=sandbox(binary="rm", mounts=[Mount(p.parent, p.parent) for p in filtered]))
+        # for d in filtered:
+        #     shutil.rmtree(d, ignore_errors=True)
         run(["rm", "-rf", "--", *filtered],
             sandbox=sandbox(binary="rm", mounts=[Mount(p.parent, p.parent) for p in filtered]))
 

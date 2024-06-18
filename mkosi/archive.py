@@ -23,7 +23,9 @@ def tar_exclude_apivfs_tmp() -> list[str]:
 
 
 def make_tar(src: Path, dst: Path, *, sandbox: SandboxProtocol = nosandbox) -> None:
+    print(src, dst, sandbox)
     log_step(f"Creating tar archive {dst}…")
+    # input()
 
     with dst.open("wb") as f:
         run(
