@@ -83,6 +83,12 @@ def extract_tar(
             "--xattrs",
             "--force-local",
             *tar_exclude_apivfs_tmp(),
+            "--exclude", "./usr/share/doc/*",
+            "--include", "./usr/share/doc/*/copyright",
+            "--exclude", "./usr/share/man/*",
+            "--exclude", "./usr/share/groff/*",
+            "--exclude", "./usr/share/gtk-doc/*",
+            "--exclude", "./usr/share/info/*",
         ],
         sandbox=sandbox(
             binary="tar",
