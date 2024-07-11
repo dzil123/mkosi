@@ -2780,6 +2780,9 @@ def cache_tree_paths(config: Config) -> tuple[Path, Path, Path]:
     if config.image:
         fragments += [config.image]
 
+    if config.image_id:
+        fragments += [config.image_id]
+
     key = '~'.join(str(s) for s in fragments)
 
     assert config.cache_dir
