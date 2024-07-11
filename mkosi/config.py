@@ -1162,6 +1162,7 @@ class ConfigSetting:
     default: Any = None
     default_factory: Optional[ConfigDefaultCallback] = None
     default_factory_depends: tuple[str, ...] = tuple()
+    default_expand_specifiers: bool = False
     paths: tuple[str, ...] = ()
     path_read_text: bool = False
     path_secret: bool = False
@@ -1399,6 +1400,7 @@ class Config:
     output_dir: Optional[Path]
     workspace_dir: Optional[Path]
     cache_dir: Optional[Path]
+    cache_key: str
     package_cache_dir: Optional[Path]
     build_dir: Optional[Path]
     image_id: Optional[str]
@@ -2055,6 +2057,14 @@ SETTINGS = (
         parse=config_make_path_parser(required=False),
         paths=("mkosi.cache",),
         help="Incremental cache directory",
+        universal=True,
+    ),
+    ConfigSetting(
+        dest="cache_key",
+        section="Output",
+        default="%d~%r~%a",
+        default_expand_specifiers=True,
+        help="Key to use inside incremental cache directory",
         universal=True,
     ),
     ConfigSetting(
@@ -3525,6 +3535,9 @@ def parse_config(argv: Sequence[str] = (), *, resources: Path = Path("/")) -> tu
         else:
             default = setting.parse(None, None)
 
+        if setting.default_expand_specifiers:
+            default = expand_specifiers(default, ParseContext.cli.directory)
+
         setattr(ParseContext.config, setting.dest, default)
 
         return default
@@ -4046,6 +4059,7 @@ def summary(config: Config) -> str:
                    Output Directory: {config.output_dir_or_cwd()}
                 Workspace Directory: {config.workspace_dir_or_default()}
                     Cache Directory: {none_to_none(config.cache_dir)}
+                          Cache Key: {config.cache_key}
             Package Cache Directory: {none_to_default(config.package_cache_dir)}
                     Build Directory: {none_to_none(config.build_dir)}
                            Image ID: {config.image_id}
