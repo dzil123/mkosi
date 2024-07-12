@@ -1776,7 +1776,6 @@ def finalize_default_initrd(
         *(["--output-dir", str(output_dir)] if output_dir else []),
         *(["--workspace-dir", str(config.workspace_dir)] if config.workspace_dir else []),
         *(["--cache-dir", str(config.cache_dir)] if config.cache_dir else []),
-        *(["--cache-key", config.cache_key]),
         *(["--package-cache-dir", str(config.package_cache_dir)] if config.package_cache_dir else []),
         *(["--local-mirror", str(config.local_mirror)] if config.local_mirror else []),
         "--incremental", str(config.incremental),
@@ -2777,6 +2776,7 @@ def print_output_size(path: Path) -> None:
 
 
 def cache_tree_paths(config: Config) -> tuple[Path, Path, Path]:
+    logging.warn(f"cache_tree {config.cache_key}")
     fragments = [config.cache_key]
 
     if config.image:
